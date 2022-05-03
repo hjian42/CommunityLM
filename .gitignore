@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# For processing large amounts of data (mostly using Dask) (bcroy)
+/data_store
