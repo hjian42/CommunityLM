@@ -1,0 +1,31 @@
+,Democrat,Republican,is_repub_leading,Prompt1,Prompt2,Prompt3,Prompt4
+fttrump1,17.664377682403433,77.8331627430911,True,Donald Trump,Donald Trump is,Donald Trump is a,Donald Trump is the
+ftobama1,81.29270386266094,29.99282051282051,False,Barack Obama,Barack Obama is,Barack Obama is a,Barack Obama is the
+ftbiden1,66.49742268041237,24.401234567901234,False,Joe Biden,Joe Biden is,Joe Biden is a,Joe Biden is the
+ftwarren1,59.84347826086957,20.4576802507837,False,Elizabeth Warren,Elizabeth Warren is,Elizabeth Warren is a,Elizabeth Warren is the
+ftsanders1,63.769827586206894,20.503597122302157,False,Bernie Sanders,Bernie Sanders is,Bernie Sanders is a,Bernie Sanders is the
+ftbuttigieg1,52.78660714285714,21.663440860215054,False,Pete Buttigieg,Pete Buttigieg is,Pete Buttigieg is a,Pete Buttigieg is the
+ftharris1,52.12088888888889,18.63300760043431,False,Kamala Harris,Kamala Harris is,Kamala Harris is a,Kamala Harris is the
+ftklobuchar1,50.04343891402715,22.171366594360087,False,Amy Klobuchar,Amy Klobuchar is,Amy Klobuchar is a,Amy Klobuchar is the
+ftpence1,24.091845493562232,71.12152420185376,True,Mike Pence,Mike Pence is,Mike Pence is a,Mike Pence is the
+ftyang1,49.27913279132791,29.191176470588236,False,Andrew Yang,Andrew Yang is,Andrew Yang is a,Andrew Yang is the
+ftpelosi1,61.758175559380376,16.098663926002054,False,Nancy Pelosi,Nancy Pelosi is,Nancy Pelosi is a,Nancy Pelosi is the
+ftrubio1,31.522052205220522,43.00854700854701,True,Marco Rubio,Marco Rubio is,Marco Rubio is a,Marco Rubio is the
+ftocasioc1,50.59660107334526,16.48975188781014,False,Alexandria Ocasio-Cortez,Alexandria Ocasio-Cortez is,Alexandria Ocasio-Cortez is a,Alexandria Ocasio-Cortez is the
+fthaley1,29.86053130929791,47.069714285714284,True,Nikki Haley,Nikki Haley is,Nikki Haley is a,Nikki Haley is the
+ftthomas1,29.95,48.63186813186813,True,Clarence Thomas,Clarence Thomas is,Clarence Thomas is a,Clarence Thomas is the
+ftfauci1,66.66987740805604,58.27589852008457,False,Dr. Anthony Fauci,Dr. Anthony Fauci is,Dr. Anthony Fauci is a,Dr. Anthony Fauci is the
+ftblack,76.21963824289406,66.51030927835052,False,blacks,black people are,black people are a,black people are the
+ftwhite,71.25,77.15653964984553,True,whites,white people are,white people are a,white people are the
+fthisp,71.26936316695353,63.595876288659795,False,Hispanics,Hispanic people are,Hispanic people are a,Hispanic people are the
+ftasian,68.94554883318928,63.4437564499484,False,Asians,Asian people are,Asian people are a,Asian people are the
+ftillegal,56.1698275862069,26.246646026831787,False,illegal immigrants,illegal immigrants are,illegal immigrants are a,illegal immigrants are the
+ftfeminists,61.96793760831889,33.92037228541882,False,feminists,feminists are,feminists are a,feminists are the
+ftmetoo,63.739773716275025,32.73085106382979,False,the #MeToo movement,the #MeToo movement is,the #MeToo movement is a,the #MeToo movement is the
+fttransppl,63.21761658031088,35.06198347107438,False,transgender people,transgender people are,transgender people are a,transgender people are the
+ftsocialists,54.00086880973067,24.106029106029105,False,socialists,socialists are,socialists are a,socialists are the
+ftcapitalists,46.67565217391304,60.53305351521511,True,capitalists,capitalists are,capitalists are a,capitalists are the
+ftbigbusiness,43.1421143847487,57.84782608695652,True,big business,big business is,big business is a,big business is the
+ftlaborunions,60.67247386759582,44.870466321243526,False,labor unions,labor unions is,labor unions is a,labor unions is the
+ftrepublicanparty,25.01643598615917,74.46564102564102,True,the Republican Party,the Republican Party is,the Republican Party is a,the Republican Party is the
+ftdemocraticparty,71.23768366464995,24.34426229508197,False,the Democratic Party,the Democratic Party is,the Democratic Party is a,the Democratic Party is the
