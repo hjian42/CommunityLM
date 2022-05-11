@@ -1,0 +1,101 @@
+"""
+Author: hjian42@icloud.com
+
+This script computes the average group stance for one community GPT model per run and prompt
+
+>> Examples:
+
+    # generate the group sentiment for the Democrat GPT model
+    export CUDA_VISIBLE_DEVICES=1
+    python compute_group_stance.py \
+    --data_folder ../output/pretrained_gpt2_2019_dem \
+    --anes_csv_file ./anes2020_pilot_prompt_probing.csv \
+    --output_filename ../output/pretrained_gpt2_2019_dem/group_stance_predictions.csv
+
+    # generate the group sentiment for the Republican GPT model
+    export CUDA_VISIBLE_DEVICES=2
+    python compute_group_stance.py \
+    --data_folder ../output/pretrained_gpt2_2019_repub \
+    --anes_csv_file ./anes2020_pilot_prompt_probing.csv \
+    --output_filename ../output/pretrained_gpt2_2019_repub/group_stance_predictions.csv
+
+"""
+
+from transformers import pipeline, set_seed
+from torch.utils.data import Dataset
+from sklearn.metrics import accuracy_score
+from torch.utils.data import DataLoader
+import argparse
+from pathlib import Path
+import pandas as pd
+import os
+import numpy as np
+
+
+class TextDataset(Dataset):
+    def __init__(self, text_file_path):
+        with open(text_file_path) as f:
+            self.texts = [line.strip() for line in f.readlines()]
+        
+    def __len__(self):
+        return len(self.texts)
+
+    def __getitem__(self, idx):
+        return self.texts[idx]
+
+
+def compute_group_sentiment(filepath, model_pipeline):
+    
+    sentiment_dict = {
+        "Negative": 0,
+        "Positive": 100,
+        "Neutral": 50
+    }
+    
+    dataset = TextDataset(filepath)
+    dataloader = DataLoader(dataset, batch_size=100, shuffle=False)
+    
+    all_scores = []
+    for batch in dataloader:
+        preds = model_pipeline(batch)
+        scores = [sentiment_dict[pred['label']] for pred in preds]
+        all_scores.extend(scores)
+    group_sentiment = np.array(all_scores).mean()
+    
+    return group_sentiment
+
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data_folder", type=str)
+    parser.add_argument("--anes_csv_file", type=str)
+    parser.add_argument("--output_filename", type=str)
+    args = parser.parse_args()
+
+    questions = pd.read_csv(args.anes_csv_file).pid.values.tolist()
+    model_name = args.data_folder.strip("/").split("/")[-1]
+
+    sentiment_pipeline = pipeline("sentiment-analysis",
+                           model="cardiffnlp/twitter-roberta-base-sentiment-latest",
+                           tokenizer="cardiffnlp/twitter-roberta-base-sentiment-latest",
+                           device=0)
+
+    columns = ['model_name', 'run', 'prompt_format', 'question', 'group_sentiment']
+    rows = []
+    for run in range(1, 6):
+        run = "run_{}".format(run)
+        print("Processing {} ...".format(run))
+        for prompt_format in range(1, 5):
+            prompt_format = "Prompt{}".format(prompt_format)
+            for question in questions:
+                file_name = os.path.join(args.data_folder, run, prompt_format, question+".txt")
+                group_sentiment = compute_group_sentiment(file_name, sentiment_pipeline)
+                rows.append([model_name, run, prompt_format, question, group_sentiment])
+
+    df = pd.DataFrame(rows, columns=columns)
+    df.to_csv(args.output_filename)
+
+
+if __name__ == "__main__":
+    main()

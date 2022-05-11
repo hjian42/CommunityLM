@@ -56,7 +56,8 @@ def generate_with_a_prompt(prompt, text_gen_pipeline):
     NOTE: 50256 corresponds to '<|endoftext|>'
     """
     
-    results = text_gen_pipeline(prompt, 
+    results = text_gen_pipeline(prompt,
+                                do_sample=True,
                                 max_length=50,
                                 temperature=0.5,
                                 num_return_sequences=100, # 1000 leads to OOM
@@ -70,7 +71,7 @@ def generate_with_a_prompt(prompt, text_gen_pipeline):
 
 def main():
     
-    parser = argparse.ArgumentParser(description="main training script for word2vec dynamic word embeddings...")
+    parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str)
     parser.add_argument("--prompt_data_path", type=str)
     parser.add_argument("--prompt_option", type=str)
