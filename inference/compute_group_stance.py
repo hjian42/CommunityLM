@@ -30,6 +30,7 @@ from pathlib import Path
 import pandas as pd
 import os
 import numpy as np
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
 class TextDataset(Dataset):
@@ -45,7 +46,9 @@ class TextDataset(Dataset):
 
 
 def compute_group_sentiment(filepath, model_pipeline):
-    
+    """
+    by default, the model_pipeline is a neural sentiment model
+    """
     sentiment_dict = {
         "Negative": 0,
         "Positive": 100,
@@ -65,21 +68,38 @@ def compute_group_sentiment(filepath, model_pipeline):
     return group_sentiment
 
 
+def compute_group_lexicon_sentiment(filepath, lexicon_model):
+    """
+    lexicon-based sentiment model
+    """
+    with open(filepath) as f:
+        texts = [line.strip() for line in f.readlines()]
+    all_scores = []
+    for sentence in texts:
+        score = lexicon_model.polarity_scores(sentence)['compound']
+        all_scores.append(score)
+    group_sentiment = np.array(all_scores).mean()
+    return group_sentiment
+
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_folder", type=str)
     parser.add_argument("--anes_csv_file", type=str)
     parser.add_argument("--output_filename", type=str)
+    parser.add_argument("--sentiment_model_type", default="neural", type=str)
     args = parser.parse_args()
 
     questions = pd.read_csv(args.anes_csv_file).pid.values.tolist()
     model_name = args.data_folder.strip("/").split("/")[-1]
 
-    sentiment_pipeline = pipeline("sentiment-analysis",
-                           model="cardiffnlp/twitter-roberta-base-sentiment-latest",
-                           tokenizer="cardiffnlp/twitter-roberta-base-sentiment-latest",
-                           device=0)
+    if args.sentiment_model_type == "neural":
+        sentiment_pipeline = pipeline("sentiment-analysis",
+                            model="cardiffnlp/twitter-roberta-base-sentiment-latest",
+                            tokenizer="cardiffnlp/twitter-roberta-base-sentiment-latest",
+                            device=0)
+    else: # lexicon
+        sentiment_pipeline = SentimentIntensityAnalyzer()
 
     columns = ['model_name', 'run', 'prompt_format', 'question', 'group_sentiment']
     rows = []
@@ -90,7 +110,10 @@ def main():
             prompt_format = "Prompt{}".format(prompt_format)
             for question in questions:
                 file_name = os.path.join(args.data_folder, run, prompt_format, question+".txt")
-                group_sentiment = compute_group_sentiment(file_name, sentiment_pipeline)
+                if args.sentiment_model_type == "neural":
+                    group_sentiment = compute_group_sentiment(file_name, sentiment_pipeline)
+                else:
+                    group_sentiment = compute_group_lexicon_sentiment(file_name, sentiment_pipeline)
                 rows.append([model_name, run, prompt_format, question, group_sentiment])
 
     df = pd.DataFrame(rows, columns=columns)
