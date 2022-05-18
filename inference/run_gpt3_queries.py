@@ -62,38 +62,6 @@ def aggregate_opinion(prompt, text_gen, SentimentModel):
     scores = [Sentiment2score[pred["label"]] for pred in preds]
     return np.array(scores).mean(), preds
 
-
-def parse_results_helper():
-    df = pd.read_csv(INPUT_FILE, header=None)
-    pred_labels = []
-    pred_avg_sentiments = []
-    gold_labels = []
-    prompts = []
-    for prompt, gold_label in df[["Prompt4", "is_repub_leading"]].values:
-        prompt = prompt.strip()
-        gold_label = int(gold_label)
-        # gold_label = {"positive": 1, "negative": 0}[gold_label]
-
-        avg_dem_sentiment, _ = aggregate_opinion(prompt, dem_generator, sentiment_model)
-        avg_repub_sentiment, _ = aggregate_opinion(
-            prompt, repub_generator, sentiment_model
-        )
-
-        pred_avg_sentiments.append((avg_repub_sentiment, avg_dem_sentiment))
-        if avg_repub_sentiment > avg_dem_sentiment:
-            pred_label = 1
-        else:
-            pred_label = 0
-
-        pred_labels.append(pred_label)
-        gold_labels.append(gold_label)
-        prompts.append(prompt)
-        print(prompt)
-        print("Gold Label:", gold_label)
-        print("Pred Label:", pred_label)
-        print()
-
-
 def generate_gpt3_completions(iteration=0):
     prompts = pd.read_csv(INPUT_FILE)
     fs_out = open(GPT3_OUTPUT_FILENAME, "w")
