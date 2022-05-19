@@ -59,7 +59,7 @@ def generate_with_a_prompt(prompt, text_gen_pipeline):
     results = text_gen_pipeline(prompt,
                                 do_sample=True,
                                 max_length=50,
-                                temperature=0.5,
+                                temperature=1.0,
                                 num_return_sequences=100, # 1000 leads to OOM
                                 pad_token_id=50256,
                                 clean_up_tokenization_spaces=True
@@ -75,6 +75,7 @@ def main():
     parser.add_argument("--model_path", type=str)
     parser.add_argument("--prompt_data_path", type=str)
     parser.add_argument("--prompt_option", type=str)
+    parser.add_argument("--preceding_prompt", default=None, type=str)
     parser.add_argument("--output_path", type=str)
     parser.add_argument("--seed", type=int)
     args = parser.parse_args()
@@ -89,16 +90,22 @@ def main():
 
     output_folder = os.path.join(args.output_path, args.prompt_option)
     Path(output_folder).mkdir(parents=True, exist_ok=True)
-
+    
     for question, prompt in zip(questions, prompts):
         responses = []
         print("Working on [{}]...".format(question))
         for _ in range(10):
-            batch_responses = generate_with_a_prompt(prompt, text_generator)
+            if args.preceding_prompt:
+                batch_responses = generate_with_a_prompt(" ".join([args.preceding_prompt, prompt]), text_generator)
+            else:
+                batch_responses = generate_with_a_prompt(prompt, text_generator)
             responses.extend(batch_responses)
+        
         with open(os.path.join(output_folder, question+".txt"), "w") as out:
             for line in responses:
                 line = line.replace("\n", " ")
+                if args.preceding_prompt:
+                    line = line.replace(args.preceding_prompt+" ", "")
                 out.write(line)
                 out.write("\n")
 

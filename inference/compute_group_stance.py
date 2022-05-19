@@ -56,7 +56,7 @@ def compute_group_sentiment(filepath, model_pipeline):
     }
     
     dataset = TextDataset(filepath)
-    dataloader = DataLoader(dataset, batch_size=100, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=400, shuffle=False)
     
     all_scores = []
     for batch in dataloader:
@@ -88,6 +88,7 @@ def main():
     parser.add_argument("--anes_csv_file", type=str)
     parser.add_argument("--output_filename", type=str)
     parser.add_argument("--sentiment_model_type", default="neural", type=str)
+    parser.add_argument("--framework", default="gpt", type=str)
     args = parser.parse_args()
 
     questions = pd.read_csv(args.anes_csv_file).pid.values.tolist()
@@ -97,28 +98,43 @@ def main():
         sentiment_pipeline = pipeline("sentiment-analysis",
                             model="cardiffnlp/twitter-roberta-base-sentiment-latest",
                             tokenizer="cardiffnlp/twitter-roberta-base-sentiment-latest",
+                            max_length=512, 
+                            truncation=True,
                             device=0)
     else: # lexicon
         sentiment_pipeline = SentimentIntensityAnalyzer()
+    
+    if args.framework == "gpt":
+        columns = ['model_name', 'run', 'prompt_format', 'question', 'group_sentiment']
+        rows = []
+        for run in range(1, 6):
+            run = "run_{}".format(run)
+            print("Processing {} ...".format(run))
+            for prompt_format in range(1, 5):
+                prompt_format = "Prompt{}".format(prompt_format)
+                for question in questions:
+                    file_name = os.path.join(args.data_folder, run, prompt_format, question+".txt")
+                    if args.sentiment_model_type == "neural":
+                        group_sentiment = compute_group_sentiment(file_name, sentiment_pipeline)
+                    else:
+                        group_sentiment = compute_group_lexicon_sentiment(file_name, sentiment_pipeline)
+                    rows.append([model_name, run, prompt_format, question, group_sentiment])
 
-    columns = ['model_name', 'run', 'prompt_format', 'question', 'group_sentiment']
-    rows = []
-    for run in range(1, 6):
-        run = "run_{}".format(run)
-        print("Processing {} ...".format(run))
-        for prompt_format in range(1, 5):
-            prompt_format = "Prompt{}".format(prompt_format)
-            for question in questions:
-                file_name = os.path.join(args.data_folder, run, prompt_format, question+".txt")
-                if args.sentiment_model_type == "neural":
-                    group_sentiment = compute_group_sentiment(file_name, sentiment_pipeline)
-                else:
-                    group_sentiment = compute_group_lexicon_sentiment(file_name, sentiment_pipeline)
-                rows.append([model_name, run, prompt_format, question, group_sentiment])
-
-    df = pd.DataFrame(rows, columns=columns)
-    df.to_csv(args.output_filename)
-
+        df = pd.DataFrame(rows, columns=columns)
+        df.to_csv(args.output_filename)
+    else: #  "keyword" baseline
+        rows = []
+        columns = ['model_name', 'question', 'group_sentiment']
+        for question in questions:
+            print("Processing {} ...".format(question))
+            file_name = os.path.join(args.data_folder, question+".txt")
+            if args.sentiment_model_type == "neural":
+                group_sentiment = compute_group_sentiment(file_name, sentiment_pipeline)
+            else:
+                group_sentiment = compute_group_lexicon_sentiment(file_name, sentiment_pipeline)
+            rows.append([model_name, question, group_sentiment])
+        df = pd.DataFrame(rows, columns=columns)
+        df.to_csv(args.output_filename)
 
 if __name__ == "__main__":
     main()
