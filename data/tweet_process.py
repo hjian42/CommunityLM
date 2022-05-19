@@ -3,6 +3,7 @@ from nltk.tokenize import TweetTokenizer
 from tqdm import tqdm
 # from pandarallel import pandarallel
 import pandas as pd
+import sys
 
 tokenizer = TweetTokenizer()
 # pandarallel.initialize()
@@ -13,7 +14,8 @@ def normalizeToken(token):
     if token.startswith("@"):
         return "@USER"
     if lowercased_token.startswith("http") or lowercased_token.startswith("www"):
-        return "HTTPURL"
+        # return "HTTPURL"
+        return ""
     elif len(token) == 1:
         return demojize(token)
     else:
@@ -61,21 +63,16 @@ def normalizeTweet(tweet):
 
 
 if __name__ == "__main__":
+    
+    intput_file = sys.argv[1]
+    output_file = sys.argv[2]
+    print(intput_file, output_file)
 
-    with open("./usa_tweets_2022/raw/reps.csv") as f, \
-        open("./usa_tweets_2022/normalize/reps_normalize.txt", "w") as out:
+    with open(intput_file) as f, \
+        open(output_file, "w") as out:
         for i, line in tqdm(enumerate(f)):
-            if i != 0:
-                line = normalizeTweet(line)
-                if line.strip():
-                    out.write(line)
-                    out.write("\n")
-
-    with open("./usa_tweets_2022/raw/dems.csv") as f, \
-        open("./usa_tweets_2022/normalize/dems_normalize.txt", "w") as out:
-        for i, line in tqdm(enumerate(f)):
-            if i != 0:
-                line = normalizeTweet(line)
-                if line.strip():
-                    out.write(line)
-                    out.write("\n")
+            line = normalizeTweet(line)
+            if line.strip():
+                out.write(line)
+                out.write("\n")
+                
