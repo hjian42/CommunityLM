@@ -1,23 +1,6 @@
 """
-Author: hjian42@icloud.com
 
 This script computes the average group stance for one community GPT model per run and prompt
-
->> Examples:
-
-    # generate the group sentiment for the Democrat GPT model
-    export CUDA_VISIBLE_DEVICES=1
-    python compute_group_stance.py \
-    --data_folder ../output/pretrained_gpt2_2019_dem \
-    --anes_csv_file ./anes2020_pilot_prompt_probing.csv \
-    --output_filename ../output/pretrained_gpt2_2019_dem/group_stance_predictions.csv
-
-    # generate the group sentiment for the Republican GPT model
-    export CUDA_VISIBLE_DEVICES=2
-    python compute_group_stance.py \
-    --data_folder ../output/pretrained_gpt2_2019_repub \
-    --anes_csv_file ./anes2020_pilot_prompt_probing.csv \
-    --output_filename ../output/pretrained_gpt2_2019_repub/group_stance_predictions.csv
 
 """
 

@@ -1,38 +1,7 @@
 """
-Author: hjian42@icloud.com
 
 This script uses communuty GPT models to generate opinions given prompts and save these voices
 
->>> Examples:
-    # generate 1000 voices for Democratic GPT, repeat 5 times
-    export CUDA_VISIBLE_DEVICES=1
-    for run in 1 2 3 4 5
-    do
-        for prompt in Prompt1 Prompt2 Prompt3 Prompt4
-        do
-            python generate_community_opinion.py \
-            --model_path ../train_lm/models/pretrained_gpt2_2019_dem/ \
-            --prompt_data_path ./anes2020_pilot_prompt_probing.csv \
-            --prompt_option ${prompt} \
-            --output_path ../output/pretrained_gpt2_2019_dem/run_${run} \
-            --seed ${run}
-        done
-    done
-
-    # generate 1000 voices for Republican GPT, repeat 5 times
-    export CUDA_VISIBLE_DEVICES=2
-    for run in 1 2 3 4 5
-    do
-        for prompt in Prompt1 Prompt2 Prompt3 Prompt4
-        do
-            python generate_community_opinion.py \
-            --model_path ../train_lm/models/pretrained_gpt2_2019_repub/ \
-            --prompt_data_path ./anes2020_pilot_prompt_probing.csv \
-            --prompt_option ${prompt} \
-            --output_path ../output/pretrained_gpt2_2019_repub/run_${run} \
-            --seed ${run}
-        done
-    done
 """
 
 import sys
