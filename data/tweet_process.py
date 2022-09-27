@@ -1,12 +1,10 @@
 from emoji import demojize
 from nltk.tokenize import TweetTokenizer
 from tqdm import tqdm
-# from pandarallel import pandarallel
 import pandas as pd
 import sys
 
 tokenizer = TweetTokenizer()
-# pandarallel.initialize()
 
 
 def normalizeToken(token):
