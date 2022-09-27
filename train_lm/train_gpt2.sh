@@ -7,7 +7,7 @@ export TRANSFORMERS_CACHE=/mas/u/hjian42/communityLM/Partisan-LM/cache/huggingfa
 
 
 #################################
-# GPT-2 (pre-trained) -- partisan data
+# GPT-2 (fine-tuned) -- partisan data
 #################################
 
 # fine-tune GPT-2 on 4.7 Republican tweets
@@ -31,7 +31,7 @@ python ./run_clm.py \
     --per_device_eval_batch_size 8 \
     --do_train \
     --do_eval \
-    --output_dir ./models/pretrained_gpt2_2019_${which_party}
+    --output_dir ./models/finetuned_gpt2_2019_${which_party}
 
 
 # fine-tune GPT-2 on 4.7 Democratic tweets
@@ -55,4 +55,4 @@ python ./run_clm.py \
     --per_device_eval_batch_size 8 \
     --do_train \
     --do_eval \
-    --output_dir ./models/pretrained_gpt2_2019_${which_party}
+    --output_dir ./models/finetuned_gpt2_2019_${which_party}
